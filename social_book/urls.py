@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('core.urls')),
     
+    
 ]
 
 urlpatterns = urlpatterns+static(settings.MEDIA_URL,document_roots = settings.MEDIA_ROOT)

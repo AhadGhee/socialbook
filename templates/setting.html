@@ -25,7 +25,7 @@
 
             <div class="container m-auto"> 
 
-                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"> Account Setting </h1>
+                <h1 class="text-2xl leading-none text-gray-900 tracking-tight mt-3"><a href="/"> Home </a> / Account Setting for <b>{{user.username}}</b></h1>
                 <ul class="mt-5 -mr-3 flex-nowrap lg:overflow-hidden overflow-x-scroll uk-tab">
                     <li class="uk-active"><a href="#">General</a></li>
                     <li><a href="#">Profile</a></li>
@@ -36,9 +36,12 @@
                     <li><a href="#">Security</a></li>
                 </ul>
 
+                <br>
+                <hr>
+
                 <div class="grid lg:grid-cols-3 mt-12 gap-8">
                     <div>
-                        <h3 class="text-xl mb-2"> Basic</h3>
+                        <h3 class="text-xl mb-2">Genreal Settings</h3>
                         <p></p>
                     </div>
                     <div class="bg-white rounded-md lg:shadow-lg shadow col-span-2">
@@ -57,14 +60,24 @@
                                 <input type="text" placeholder="Your name.." class="shadow-none bg-gray-100">
                             </div>
                             <div class="col-span-2">
-                                <label for="about">About me</label>  
-                                <textarea id="about" name="about" rows="3"  class="shadow-none bg-gray-100"></textarea>
+                                <label for="about">Bio</label>  
+                                <textarea id="about" name="bio" rows="3"  class="shadow-none bg-gray-100"></textarea>
                             </div> 
+
+                        <form action="" method="POST">
+                                
                             <div class="col-span-2">
-                                <label for=""> Location</label>
-                                <input type="text" placeholder="" class="shadow-none bg-gray-100">
+                                <label for="">Profile Image</label>
+                                  <!-- custom styled button -->
+                            <label for="image"class="mt-2 flex w-full cursor-pointer items-center justify-center rounded-md border border-gray-300 bg-gray-100 px-4 py-2 text-sm text-gray-700 shadow-sm hover:bg-gray-200">Choose File</label>
+                                <!-- <input type="file" name ="image" placeholder="" class="shadow-none bg-gray-100"> -->
                             </div>
-                            <div>
+
+                            <div class="col-span-2">
+                                <label for="">Location</label>
+                                <input type="text" name ="location" placeholder="" class="shadow-none bg-gray-100">
+                            </div>
+                            <!-- <div>
                                <label for=""> Working at</label>
                                <input type="text" placeholder="" class="shadow-none bg-gray-100">
                             </div> 
@@ -77,13 +90,14 @@
                                 <option value="3">Married</option>
                                 <option value="4">Engaged</option>
                               </select>
-                            </div>
+                            </div> -->
                        </div> 
     
                        <div class="bg-gray-10 p-6 pt-0 flex justify-end space-x-3">
                            <button class="p-2 px-4 rounded bg-gray-50 text-red-500"> Cancel </button>
                            <button type="button" class="button bg-blue-700"> Save </button>
                        </div>
+                    </form>
     
                     </div>
 
