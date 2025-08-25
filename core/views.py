@@ -4,7 +4,19 @@ from django.http import HttpResponse
 from django.contrib import messages
 from .models import Profile
 from django.contrib.auth.decorators import login_required
+from django import forms
 # Create your views here.
+
+
+class ProfileForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['profileimg', 'bio', 'location']
+        widgets = {
+            'bio': forms.Textarea(attrs={'rows': 3, 'class': 'shadow-none bg-gray-100'}),
+            'location': forms.TextInput(attrs={'class': 'shadow-none bg-gray-100'}),
+            'profileimg': forms.FileInput(attrs={'class': 'shadow-none bg-gray-100'}),
+        }
 
 @login_required(login_url='signin')
 
@@ -12,38 +24,33 @@ def index(request):
     return render(request,'index.html')
 
 def signup(request):
-
     if request.method == 'POST':
         username = request.POST['username']
         email = request.POST['email']
         password = request.POST['password']
         password2 = request.POST['password2']
 
-        if password == password2: 
-            if User.objects.filter (email=email).exists():
-                messages.info(request, 'This email already exits')
+        if password == password2:
+            if User.objects.filter(email=email).exists():
+                messages.info(request, 'This email already exists')
                 return redirect('signup')
-            elif User.objects.filter (username=username).exists():
-                messages.info(request, 'User name is taken')
+            elif User.objects.filter(username=username).exists():
+                messages.info(request, 'Username is taken')
                 return redirect('signup')
             else:
                 user = User.objects.create_user(username=username, email=email, password=password)
                 user.save()
 
-                #Log user in and redirect to settings page
+                # Log user in and redirect to settings page
                 user_login = auth.authenticate(username=username, password=password)
                 auth.login(request, user_login)
 
-                #create a profile object for the new user
-                user_model = User.objects.get(username=username)
-                new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
-                new_profile.save()
-                return redirect ('settings')
-        else: 
+                # Create a profile for the new user
+                Profile.objects.create(user=user)
+                return redirect('settings')
+        else:
             messages.info(request, 'Password Not Matching')
             return redirect('signup')
-            
-        
     else:
         return render(request, 'signup.html')
 
@@ -65,12 +72,27 @@ def signin(request):
     else:
         return render(request,'signin.html')
     
-@login_required(login_url='signin')
-def settings(request):
-    user_profile, _ = Profile.objects.get_or_create(user=request.user)
-    return render(request,'setting.html', {'user_profile': user_profile})
+
 
 @login_required(login_url='signin')
+def settings(request):
+    try:
+        user_profile = Profile.objects.get(user=request.user)
+    except Profile.DoesNotExist:
+        user_profile = Profile.objects.create(user=request.user)
+        user_profile.save()
+
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('settings')
+    else:
+        form = ProfileForm(instance=user_profile)
+
+    return render(request, 'setting.html', {'user_profile': user_profile, 'form': form})
+
+
 def logout(request):
     auth.logout(request)
     return redirect('signin')
