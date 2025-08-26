@@ -128,8 +128,31 @@ def signup(request):
         # If request is GET → just show signup page
         return render(request, 'signup.html')
 
-def profile(request):
-    return render(request, 'profile.html')
+
+@login_required(login_url='signin')   # Only logged-in users can access this page
+def profile(request, pk):
+    # Get the User object whose username matches the parameter `pk`
+    # ⚠️ Small fix: should be `User.objects.get(...)` not `User.object.get(...)`
+    user_object = User.objects.get(username=pk)
+
+    # Get the Profile object that belongs to this user
+    user_profile = Profile.objects.get(user=user_object)
+
+    # Get all posts created by this user (filtering by username or user field)
+    user_posts = Post.objects.filter(user=pk)
+
+    # Count how many posts this user has
+    user_post_length = len(user_posts)
+
+    # Pack all the data into a dictionary (context) to send to the template
+    context = {
+        'user_object' : user_object,         # the User model instance
+        'user_profile' : user_profile,       # the Profile model instance
+        'user_post_length' : user_post_length,  # total number of posts
+    }
+
+    # Render the profile.html page, passing the context dictionary
+    return render(request, 'profile.html', context)
 
 # --------------------------------------------------------------
 # Handle user signin
